@@ -1,3 +1,26 @@
 #results {
-  margin-top: 50px;
+  padding-top: 50px;
+}
+a.gotop {
+  color: white;
+}
+/* unvisited link */
+a.gotop:link {
+  color: white;
+}
+
+/* visited link */
+a.gotop:visited {
+  color: white;
+}
+
+/* mouse over link */
+a.gotop:hover {
+  color: white;
+  cursor: pointer;
+}
+
+/* selected link */
+a.gotop:active {
+  color: white;
 }

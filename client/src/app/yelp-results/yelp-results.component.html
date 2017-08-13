@@ -1,11 +1,17 @@
-<div class="container" id="results">
-  <div class="card-columns">
-    <div class="card" *ngFor="let result of searchResults">
-      <img class="card-img-top" src="{{result.image_url}}" alt="Card image cap">
-      <div class="card-body">
-        <h4 class="card-title">{{result.name}}</h4>
-        <p class="card-text">{{result.categories[0].title}} - {{result.rating}}</p>
-        <p class="card-text"><small class="text-muted">{{result.url}}</small></p>
+<div class="home-bgcolor">
+  <div class="container" id="results">
+    <div class="card-columns">
+      <div class="card" *ngFor="let result of searchResults">
+        <img class="card-img-top" src="{{result.image_url}}" alt="Card image cap">
+        <div class="card-body">
+          <h4 class="card-title">{{result.name}}</h4>
+          <p class="card-subtitle mb-2 text-muted"><span *ngFor="let title of result.categories">- {{title.title}} </span>
+          </p>
+          <p class="card-text">Rating: {{result.rating}} stars from {{result.review_count}} ratings</p>
+          <p class="card-text">Location: {{result.location.display_address}}</p>
+          <p class="card-text"><small class="text-muted"><a href="{{result.url}}">See on Yelp</a></small><a href="#" class="float-right">RSVP</a></p>
+        </div>
       </div>
     </div>
+    <a class="gotop" (click)="goTop()">Go to Top</a>
   </div>

@@ -55,8 +55,8 @@ server.get("/yelp/:location", (req, res) => {
 
       client.search(searchRequest).then(response => {
         const firstTenResults = response.jsonBody.businesses.slice(0, 10);
-        const prettyJson = JSON.stringify(firstTenResults, null, 4);
-        return res.json(prettyJson);
+        // const prettyJson = JSON.stringify(firstTenResults, null, 4);
+        return res.json(firstTenResults);
       });
     })
     .catch(e => {

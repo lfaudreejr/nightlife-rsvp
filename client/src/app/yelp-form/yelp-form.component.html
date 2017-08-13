@@ -1,7 +1,7 @@
 <form class="form-location center" (ngSubmit)="getYelp(location.value); yelpForm.reset()" #yelpForm>
   <div class="input-group ">
     <label for="location" class="sr-only"></label>
-    <input type="text" class="form-control" name="location" #location placeholder="Enter City..." aria-label="Enter City..."
+    <input type="text" class="form-control" name="location" #location placeholder="Enter City or Zip Code..." aria-label="Enter City or Zip Code..."
       required>
     <span class="input-group-btn">
         <button class="btn btn-dark" type="submit" >Go!</button>

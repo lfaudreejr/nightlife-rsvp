@@ -14,4 +14,8 @@ export class YelpResultsComponent implements OnInit {
   ngOnInit() {
     this.searchResults = this.yelp.sharedSearch;
   }
+
+  goTop() {
+    document.body.scrollTop = 0;
+  }
 }
