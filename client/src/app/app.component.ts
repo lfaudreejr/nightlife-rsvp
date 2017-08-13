@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { YelpService } from "./shared/yelp.service";
 
 @Component({
   selector: "app-root",
@@ -8,9 +7,7 @@ import { YelpService } from "./shared/yelp.service";
 })
 export class AppComponent implements OnInit {
   title = "app";
-  constructor(public yelp: YelpService) {}
+  constructor() {}
 
-  ngOnInit() {
-    this.yelp.authYelp();
-  }
+  ngOnInit() {}
 }
