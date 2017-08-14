@@ -7,20 +7,36 @@ const cookieSession = require("cookie-session");
 const RateLimit = require("express-rate-limit");
 const responseTime = require("response-time");
 const compression = require("compression");
+const passport = require("passport");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const server = express();
 require("dotenv").config();
 
-const yelp = require("yelp-fusion");
+const yelpRoutes = require("./routes/yelp");
+const authRoutes = require("./routes/auth");
+const loginRoutes = require("./routes/login");
+const config = require("./config");
 
-const port = process.env.PORT || 3000;
-const csrfProtection = csrf({ cookie: true });
+// MongoDB - Mongoose
+mongoose.connect(config.MONGO_URI);
+const MongoDB = mongoose.connection;
+MongoDB.on("error", () => {
+  console.error(
+    "MongoDB connection error. Please make sure that",
+    config.MONGO_URI,
+    "is running."
+  );
+});
+MongoDB.on("open", () => {
+  console.info("Connected to Mongodb:", config.MONGO_URI);
+});
+// Middleware
 const limiter = new RateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
   delayMs: 0
 });
-// Middleware
 server.use(morgan("combined"));
 server.use(cors());
 server.use(helmet());
@@ -29,42 +45,23 @@ server.use(
   cookieSession({
     name: "session",
     keys: [process.env.KEY, process.env.KEY2],
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
   })
 );
 server.use(cookieParser());
+server.use(csrf({ cookie: true }));
 server.use(compression());
 server.use(responseTime());
-
-server.get("/", csrfProtection, (req, res) => {
+server.use(passport.initialize());
+server.use(passport.session());
+// Routes
+server.get("/", (req, res) => {
   res.send("Hello server");
 });
-
-server.get("/yelp/:location", (req, res) => {
-  const clientId = process.env.YELP_ID;
-  const clientSecret = process.env.YELP_SECRET;
-  const location = req.params.location;
-  const searchRequest = {
-    term: "bars",
-    location: req.params.location
-  };
-  yelp
-    .accessToken(clientId, clientSecret)
-    .then(response => {
-      const client = yelp.client(response.jsonBody.access_token);
-
-      client.search(searchRequest).then(response => {
-        const firstTenResults = response.jsonBody.businesses.slice(0, 10);
-        // const prettyJson = JSON.stringify(firstTenResults, null, 4);
-        return res.json(firstTenResults);
-      });
-    })
-    .catch(e => {
-      console.log(e);
-      return res.json(e);
-    });
-});
-
+server.use("/yelp", yelpRoutes);
+server.use("/auth", authRoutes);
+server.use("/login", loginRoutes);
+// 404 Handler
 server.use(function(req, res, next) {
   res.status(404).send("Sorry can't find that!");
 });
@@ -76,7 +73,8 @@ if (process.env.NODE_ENV !== "dev") {
     res.sendFile(path.join(__dirname, "/client/dist/index.html"));
   });
 }
-
+// Set Port
+const port = process.env.PORT || 3000;
 server.listen(port, err => {
   if (err) throw err;
   console.log(`Listening on ${port}`);
