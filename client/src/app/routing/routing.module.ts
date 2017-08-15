@@ -4,6 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { HomeComponent } from "./../home/home.component";
 import { YelpResultsComponent } from "./../yelp-results/yelp-results.component";
+import { CallbackComponent } from "./../callback/callback.component";
 
 const routes: Routes = [
   {
@@ -13,7 +14,9 @@ const routes: Routes = [
   {
     path: "results",
     component: YelpResultsComponent
-  }
+  },
+  { path: "callback", component: CallbackComponent },
+  { path: "**", pathMatch: "full", redirectTo: "/" }
 ];
 
 @NgModule({

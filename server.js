@@ -10,12 +10,18 @@ const compression = require("compression");
 const passport = require("passport");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
+const jwt = require("express-jwt");
 const server = express();
 require("dotenv").config();
 
+const authCheck = jwt({
+  secret: new Buffer(process.env.AUTH0_SECRET, "base64"),
+  audience: process.env.AUTH0_CLIENT_ID
+});
+
 const yelpRoutes = require("./routes/yelp");
-const authRoutes = require("./routes/auth");
-const loginRoutes = require("./routes/login");
+const auth = require("./controllers/auth.controller");
 const config = require("./config");
 
 // MongoDB - Mongoose
@@ -34,7 +40,7 @@ MongoDB.on("open", () => {
 // Middleware
 const limiter = new RateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 20,
+  max: 100,
   delayMs: 0
 });
 server.use(morgan("combined"));
@@ -54,18 +60,15 @@ server.use(compression());
 server.use(responseTime());
 server.use(passport.initialize());
 server.use(passport.session());
+// Set static path to Angular app in dist
+// Dont run in dev
+if (process.env.NODE_ENV !== "dev") {
+  server.use("/", express.static(path.join(__dirname, "./client/dist")));
+}
 // Routes
-server.get("/", (req, res) => {
-  res.send("Hello server");
-});
 server.use("/yelp", yelpRoutes);
-server.use("/auth", authRoutes);
-server.use("/login", loginRoutes);
-// 404 Handler
-server.use(function(req, res, next) {
-  res.status(404).send("Sorry can't find that!");
-});
-
+server.get("/user", authCheck, auth.getUser);
+server.get("/logout", auth.logout);
 // Pass routing to Angular
 // Dont run in dev
 if (process.env.NODE_ENV !== "dev") {
@@ -73,6 +76,11 @@ if (process.env.NODE_ENV !== "dev") {
     res.sendFile(path.join(__dirname, "/client/dist/index.html"));
   });
 }
+// 404 Handler
+server.use(function(req, res, next) {
+  res.status(404).send("Sorry can't find that!");
+});
+
 // Set Port
 const port = process.env.PORT || 3000;
 server.listen(port, err => {

@@ -8,7 +8,7 @@ import { YelpService } from "./../shared/yelp.service";
   styleUrls: ["./yelp-form.component.css"]
 })
 export class YelpFormComponent implements OnInit {
-  constructor(public yelp: YelpService) {}
+  constructor(private yelp: YelpService) {}
 
   ngOnInit() {}
 

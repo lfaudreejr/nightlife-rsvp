@@ -7,7 +7,7 @@ import { YelpService } from "./../shared/yelp.service";
   styleUrls: ["./yelp-results.component.css"]
 })
 export class YelpResultsComponent implements OnInit {
-  private searchResults;
+  public searchResults;
 
   constructor(public yelp: YelpService) {}
 

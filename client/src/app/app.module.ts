@@ -11,12 +11,16 @@ import { HomeComponent } from "./home/home.component";
 import { YelpFormComponent } from "./yelp-form/yelp-form.component";
 import { YelpResultsComponent } from "./yelp-results/yelp-results.component";
 
+import { AuthService } from "./auth/auth.service";
+import { CallbackComponent } from './callback/callback.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     YelpFormComponent,
-    YelpResultsComponent
+    YelpResultsComponent,
+    CallbackComponent
   ],
   imports: [
     BrowserModule,
@@ -25,7 +29,7 @@ import { YelpResultsComponent } from "./yelp-results/yelp-results.component";
     SharedModule,
     CoreModule
   ],
-  providers: [],
+  providers: [AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
