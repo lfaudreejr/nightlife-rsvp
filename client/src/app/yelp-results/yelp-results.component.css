@@ -1,6 +1,9 @@
 #results {
   padding-top: 50px;
 }
+a {
+  cursor: pointer;
+}
 a.gotop {
   color: white;
 }

@@ -2,11 +2,12 @@ const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
-const csrf = require("csurf");
+// const csrf = require("csurf");
 const cookieSession = require("cookie-session");
 const RateLimit = require("express-rate-limit");
 const responseTime = require("response-time");
 const compression = require("compression");
+const bodyParser = require("body-parser");
 const passport = require("passport");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -14,6 +15,7 @@ const path = require("path");
 const jwt = require("express-jwt");
 const server = express();
 require("dotenv").config();
+const config = require("./config");
 
 const authCheck = jwt({
   secret: new Buffer(process.env.AUTH0_SECRET, "base64"),
@@ -21,8 +23,7 @@ const authCheck = jwt({
 });
 
 const yelpRoutes = require("./routes/yelp");
-const auth = require("./controllers/auth.controller");
-const config = require("./config");
+const apiRoutes = require("./routes/api");
 
 // MongoDB - Mongoose
 mongoose.connect(config.MONGO_URI);
@@ -45,6 +46,10 @@ const limiter = new RateLimit({
 });
 server.use(morgan("combined"));
 server.use(cors());
+// parse application/x-www-form-urlencoded
+server.use(bodyParser.urlencoded({ extended: false }));
+// parse application/json
+server.use(bodyParser.json());
 server.use(helmet());
 server.use(limiter);
 server.use(
@@ -55,7 +60,7 @@ server.use(
   })
 );
 server.use(cookieParser());
-server.use(csrf({ cookie: true }));
+// server.use(csrf({ cookie: true }));
 server.use(compression());
 server.use(responseTime());
 server.use(passport.initialize());
@@ -67,8 +72,7 @@ if (process.env.NODE_ENV !== "dev") {
 }
 // Routes
 server.use("/yelp", yelpRoutes);
-server.get("/user", authCheck, auth.getUser);
-server.get("/logout", auth.logout);
+server.use("/api", apiRoutes);
 // Pass routing to Angular
 // Dont run in dev
 if (process.env.NODE_ENV !== "dev") {
@@ -80,7 +84,6 @@ if (process.env.NODE_ENV !== "dev") {
 server.use(function(req, res, next) {
   res.status(404).send("Sorry can't find that!");
 });
-
 // Set Port
 const port = process.env.PORT || 3000;
 server.listen(port, err => {

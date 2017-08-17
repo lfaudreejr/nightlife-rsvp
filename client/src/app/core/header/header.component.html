@@ -11,6 +11,9 @@
         <a class="nav-link" (click)="auth.login()">Login/Signup</a>
       </li>
       <li class="nav-item" *ngIf="auth.isAuthenticated()">
+        <a class="nav-link">Welcome {{auth.currentUser.name}} |</a>
+      </li>
+      <li class="nav-item" *ngIf="auth.isAuthenticated()">
         <a class="nav-link" (click)="auth.logout()">Logout</a>
       </li>
     </ul>

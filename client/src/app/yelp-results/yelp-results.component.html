@@ -9,7 +9,7 @@
           </p>
           <p class="card-text">Rating: {{result.rating}} stars from {{result.review_count}} ratings</p>
           <p class="card-text">Location: {{result.location.display_address}}</p>
-          <p class="card-text"><small class="text-muted"><a href="{{result.url}}">See on Yelp</a></small><a href="#" class="float-right">RSVP</a></p>
+          <p class="card-text"><small class="text-muted"><a href="{{result.url}}">See on Yelp</a></small><a (click)="rsvp(result.name)" class="float-right text-info">RSVP</a></p>
         </div>
       </div>
     </div>

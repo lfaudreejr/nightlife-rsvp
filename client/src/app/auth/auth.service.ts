@@ -6,15 +6,17 @@ import Auth0Lock from "auth0-lock";
 
 @Injectable()
 export class AuthService {
+  public currentUser: any;
+
   lock = new Auth0Lock(AUTH_CONFIG.clientID, AUTH_CONFIG.domain, {
     oidcConformant: true,
     autoclose: true,
     auth: {
       redirectUrl: AUTH_CONFIG.callbackURL,
       responseType: "token id_token",
-      audience: `https://${AUTH_CONFIG.domain}/userinfo`,
+      // audience: `https://${AUTH_CONFIG.domain}/userinfo`,
       params: {
-        scope: "openid"
+        scope: "openid name email picture"
       }
     }
   });
@@ -70,6 +72,8 @@ export class AuthService {
     const expiresAt = JSON.stringify(
       authResult.expiresIn * 1000 + new Date().getTime()
     );
+    this.currentUser = authResult.idTokenPayload;
+    console.log(this.currentUser);
     localStorage.setItem("access_token", authResult.accessToken);
     localStorage.setItem("id_token", authResult.idToken);
     localStorage.setItem("expires_at", expiresAt);
