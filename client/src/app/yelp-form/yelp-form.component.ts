@@ -1,18 +1,23 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core'
 
-import { YelpService } from "./../shared/yelp.service";
+import { YelpService } from './../shared/yelp.service'
 
 @Component({
-  selector: "app-yelp-form",
-  templateUrl: "./yelp-form.component.html",
-  styleUrls: ["./yelp-form.component.css"]
+  selector: 'app-yelp-form',
+  templateUrl: './yelp-form.component.html',
+  styleUrls: ['./yelp-form.component.css']
 })
 export class YelpFormComponent implements OnInit {
+  loading: boolean
+
   constructor(private yelp: YelpService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.loading = false
+  }
 
   getYelp(location: string) {
-    this.yelp.searchYelp(location);
+    this.loading = true
+    this.yelp.searchYelp(location)
   }
 }
