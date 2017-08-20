@@ -1,97 +1,120 @@
-import { Injectable } from "@angular/core";
-import { AUTH_CONFIG } from "./auth0-config";
-import { Router, NavigationStart } from "@angular/router";
-import "rxjs/add/operator/filter";
-import Auth0Lock from "auth0-lock";
+import { Injectable } from '@angular/core'
+import { Router } from '@angular/router'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { AUTH_CONFIG } from './auth0-config'
+import * as auth0 from 'auth0-js'
+
+// Avoid name not found warnings
+declare var auth0: any
 
 @Injectable()
 export class AuthService {
-  public currentUser: any;
+  // Create Auth0 web auth instance
+  private _auth0 = new auth0.WebAuth({
+    clientID: AUTH_CONFIG.clientID,
+    domain: AUTH_CONFIG.domain,
+    responseType: 'token id_token',
+    redirectUri: AUTH_CONFIG.callbackURL,
+    audience: AUTH_CONFIG.audience,
+    scope: 'openid profile'
+  })
+  userProfile: any
+  currentUser: any
+  // Create a stream of logged in status to communicate throughout app
+  loggedIn: boolean
+  loggedIn$ = new BehaviorSubject<boolean>(this.loggedIn)
 
-  lock = new Auth0Lock(AUTH_CONFIG.clientID, AUTH_CONFIG.domain, {
-    oidcConformant: true,
-    autoclose: true,
-    auth: {
-      redirectUrl: AUTH_CONFIG.callbackURL,
-      responseType: "token id_token",
-      // audience: `https://${AUTH_CONFIG.domain}/userinfo`,
-      params: {
-        scope: "openid name email picture"
-      }
+  constructor(private router: Router) {
+    // If authenticated, set local profile property
+    // and update login status subject.
+    // If not authenticated but there are still items
+    // in localStorage, log out.
+    const lsProfile = localStorage.getItem('profile')
+
+    if (this.tokenValid) {
+      this.userProfile = JSON.parse(lsProfile)
+      this.setLoggedIn(true)
+    } else if (!this.tokenValid && lsProfile) {
+      this.logout()
     }
-  });
-
-  constructor(public router: Router) {}
-
-  public login(): void {
-    this.lock.show();
+  }
+  setLoggedIn(value: boolean) {
+    // Update login status subject
+    this.loggedIn$.next(value)
+    this.loggedIn = value
   }
 
-  // Call this method in app.component.ts
-  // if using path-based routing
-  public handleAuthentication(): void {
-    this.lock.on("authenticated", authResult => {
+  login(redirect?: string) {
+    // Auth0 authorize request
+    const _redirect = redirect ? redirect : this.router.url
+    localStorage.setItem('authRedirect', _redirect)
+    this._auth0.authorize()
+  }
+
+  handleAuth() {
+    // When Auth0 hash parsed, get profile
+    this._auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
-        this.setSession(authResult);
-        this.router.navigate(["/"]);
+        window.location.hash = ''
+        this._getProfile(authResult)
+      } else if (err) {
+        this._clearRedirect()
+        this.router.navigate(['/'])
+        console.error(`Error authenticating: ${err.error}`)
       }
-    });
-    this.lock.on("authorization_error", err => {
-      this.router.navigate(["/"]);
-      console.log(err);
-      alert(`Error: ${err.error}. Check the console for further details.`);
-    });
+      this.router.navigate(['/'])
+    })
   }
 
-  // Call this method in app.component.ts
-  // if using hash-based routing
-  public handleAuthenticationWithHash(): void {
-    this.router.events
-      .filter(event => event instanceof NavigationStart)
-      .filter((event: NavigationStart) =>
-        /access_token|id_token|error/.test(event.url)
-      )
-      .subscribe(() => {
-        this.lock.resumeAuth(window.location.hash, (err, authResult) => {
-          if (err) {
-            this.router.navigate(["/"]);
-            console.log(err);
-            alert(
-              `Error: ${err.error}. Check the console for further details.`
-            );
-            return;
-          }
-          this.setSession(authResult);
-          this.router.navigate(["/"]);
-        });
-      });
+  private _getProfile(authResult) {
+    // Use access token to retrieve user's profile and set session
+    this._auth0.client.userInfo(authResult.accessToken, (err, profile) => {
+      if (profile) {
+        this._setSession(authResult, profile)
+        this.router.navigate([localStorage.getItem('authRedirect') || '/'])
+        this._clearRedirect()
+      } else if (err) {
+        console.error(`Error authenticating: ${err.error}`)
+      }
+    })
   }
 
-  private setSession(authResult): void {
-    // Set the time that the access token will expire at
-    const expiresAt = JSON.stringify(
-      authResult.expiresIn * 1000 + new Date().getTime()
-    );
-    this.currentUser = authResult.idTokenPayload;
-    console.log(this.currentUser);
-    localStorage.setItem("access_token", authResult.accessToken);
-    localStorage.setItem("id_token", authResult.idToken);
-    localStorage.setItem("expires_at", expiresAt);
+  private _setSession(authResult, profile) {
+    // Save session data and update login status subject
+    const expiresAt = JSON.stringify(authResult.expiresIn * 1000 + Date.now())
+    // Set tokens and expiration in localStorage and props
+    localStorage.setItem('access_token', authResult.accessToken)
+    localStorage.setItem('id_token', authResult.idToken)
+    localStorage.setItem('expires_at', expiresAt)
+    localStorage.setItem('profile', JSON.stringify(profile))
+    this.userProfile = profile
+    this.currentUser = authResult.idTokenPayload
+    // Update login status in loggedIn$ stream
+    this.setLoggedIn(true)
   }
 
-  public logout(): void {
-    // Remove tokens and expiry time from localStorage
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("id_token");
-    localStorage.removeItem("expires_at");
-    // Go back to the home route
-    this.router.navigate(["/"]);
+  private _clearRedirect() {
+    localStorage.removeItem('authRedirect')
   }
 
-  public isAuthenticated(): boolean {
-    // Check whether the current time is past the
-    // access token's expiry time
-    const expiresAt = JSON.parse(localStorage.getItem("expires_at"));
-    return new Date().getTime() < expiresAt;
+  logout() {
+    // Ensure all auth items removed from localStorage
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('id_token')
+    localStorage.removeItem('profile')
+    localStorage.removeItem('expires_at')
+    localStorage.removeItem('authRedirect')
+    this._clearRedirect()
+    // Reset local properties, update loggedIn$ stream
+    this.userProfile = undefined
+    this.setLoggedIn(false)
+    // Return to homepage
+    this.router.navigate(['/'])
+  }
+
+  get tokenValid(): boolean {
+    // Check if current time is past access token's expiration
+    const expiresAt = JSON.parse(localStorage.getItem('expires_at'))
+    return Date.now() < expiresAt
   }
 }

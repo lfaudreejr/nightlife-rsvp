@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #360033" role="navigation">
-  <a class="navbar-brand" href="#">Nightlife RSVP</a>
+  <a class="navbar-brand text-white" [routerLink]="['/home']">Nightlife RSVP</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggled" aria-controls="navbarToggled"
     aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -7,13 +7,13 @@
 
   <div class="collapse navbar-collapse" id="navbarToggled">
     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-      <li class="nav-item" *ngIf="!auth.isAuthenticated()">
+      <li class="nav-item" *ngIf="!auth.loggedIn">
         <a class="nav-link" (click)="auth.login()">Login/Signup</a>
       </li>
-      <li class="nav-item" *ngIf="auth.isAuthenticated()">
-        <a class="nav-link">Welcome {{auth.currentUser.name}} |</a>
+      <li class="nav-item" *ngIf="auth.loggedIn">
+        <a class="nav-link">Welcome {{auth.currentUser.name ? auth.currentUser.name : auth.currentUser.nickname}} |</a>
       </li>
-      <li class="nav-item" *ngIf="auth.isAuthenticated()">
+      <li class="nav-item" *ngIf="auth.loggedIn">
         <a class="nav-link" (click)="auth.logout()">Logout</a>
       </li>
     </ul>

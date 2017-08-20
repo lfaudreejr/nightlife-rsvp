@@ -64,5 +64,7 @@ typings/
 # Mongodb Dev Database
 database/
 
+# config files
+
 
 # End of https://www.gitignore.io/api/node

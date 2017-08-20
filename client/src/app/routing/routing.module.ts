@@ -1,23 +1,23 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { Routes, RouterModule } from "@angular/router";
+import { NgModule } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { Routes, RouterModule } from '@angular/router'
 
-import { HomeComponent } from "./../home/home.component";
-import { YelpResultsComponent } from "./../yelp-results/yelp-results.component";
-import { CallbackComponent } from "./../callback/callback.component";
+import { HomeComponent } from './../home/home.component'
+import { YelpResultsComponent } from './../yelp-results/yelp-results.component'
+import { CallbackComponent } from './../callback/callback.component'
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: HomeComponent
   },
   {
-    path: "results",
+    path: 'results',
     component: YelpResultsComponent
   },
-  { path: "callback", component: CallbackComponent },
-  { path: "**", pathMatch: "full", redirectTo: "/" }
-];
+  { path: 'callback', component: CallbackComponent },
+  { path: '**', pathMatch: 'full', redirectTo: '' }
+]
 
 @NgModule({
   imports: [CommonModule, RouterModule.forRoot(routes)],

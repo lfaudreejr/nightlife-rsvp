@@ -22,7 +22,7 @@ export class YelpResultsComponent implements OnInit {
 
   ngOnInit() {
     this.loading = false
-    this.searchResults = this.yelp.sharedSearch
+    this.searchResults = JSON.parse(sessionStorage.getItem('results'))
   }
 
   goTop() {
@@ -39,6 +39,8 @@ export class YelpResultsComponent implements OnInit {
       yelpId: bar,
       guestId: user
     }
-    this.api.postRsvp$(this.userRsvp).subscribe(data => console.log(data))
+    this.api
+      .postRsvp$(this.userRsvp)
+      .subscribe(data => console.log(data), err => console.error(err))
   }
 }

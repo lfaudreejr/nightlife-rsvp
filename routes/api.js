@@ -1,9 +1,11 @@
 const express = require('express')
 const router = express.Router()
+
 const Rsvp = require('./../models/rsvp.model')
 const rsvpController = require('../controllers/rsvp.controller')
+const checkJwt = require('../controllers/middleware')
 
-router.post('/rsvp/new', (req, res) => {
+router.post('/rsvp/new', checkJwt, (req, res) => {
   console.log(req.body.yelpId)
   console.log(req.body.guestId)
   rsvpController(req.body.yelpId, req.body.guestId)
