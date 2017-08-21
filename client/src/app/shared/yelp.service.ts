@@ -14,6 +14,7 @@ export class YelpService {
       .subscribe(res => {
         console.log(res)
         sessionStorage.setItem('results', JSON.stringify(res))
+        sessionStorage.setItem('location', location)
         this.router.navigateByUrl('/results')
       })
   }

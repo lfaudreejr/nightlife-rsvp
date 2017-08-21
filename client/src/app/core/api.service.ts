@@ -7,12 +7,15 @@ import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import { RsvpModel } from './models/rsvp.model'
 
+import { Router } from '@angular/router'
+
 @Injectable()
 export class ApiService {
   constructor(
     private http: Http,
     private auth: AuthService,
-    private authHttp: AuthHttp
+    private authHttp: AuthHttp,
+    private router: Router
   ) {}
 
   postRsvp$(rsvp: RsvpModel): Observable<RsvpModel> {
@@ -23,7 +26,9 @@ export class ApiService {
   }
 
   private _handleSuccess(res: Response) {
-    return res.json()
+    sessionStorage.setItem('results', JSON.stringify(res))
+    this.router.navigate(['/results'])
+    // return res.json()
   }
 
   private _handleError(err: Response | any) {

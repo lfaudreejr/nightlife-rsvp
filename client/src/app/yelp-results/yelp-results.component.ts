@@ -4,6 +4,8 @@ import { ApiService } from './../core/api.service'
 import { AuthService } from './../auth/auth.service'
 import { RsvpModel } from './../core/models/rsvp.model'
 
+import { Router } from '@angular/router'
+
 @Component({
   selector: 'app-yelp-results',
   templateUrl: './yelp-results.component.html',
@@ -17,7 +19,8 @@ export class YelpResultsComponent implements OnInit {
   constructor(
     public yelp: YelpService,
     private api: ApiService,
-    public auth: AuthService
+    public auth: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -39,8 +42,11 @@ export class YelpResultsComponent implements OnInit {
       yelpId: bar,
       guestId: user
     }
-    this.api
-      .postRsvp$(this.userRsvp)
-      .subscribe(data => console.log(data), err => console.error(err))
+    this.api.postRsvp$(this.userRsvp).subscribe(data => {
+      console.log(data)
+      err => {
+        console.error(err)
+      }
+    })
   }
 }
