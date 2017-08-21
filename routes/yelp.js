@@ -4,15 +4,13 @@ const router = express.Router()
 const yelpController = require('../controllers/yelp.controller')
 
 router.get('/:location', (req, res) => {
-  yelpController(req.params.location)
-    .then(results => {
-      if (results) res.json(results)
-      else res.status(500).send({ message: 'No results found' })
+  const yelpBars = yelpController.findBars(req.params.location)
+  yelpBars
+    .then(bars => {
+      res.json(bars)
+      // console.log('GOT DEM BARS TO DATE', bars)
     })
-    .catch(err => {
-      console.log(err)
-      return res.json(err)
-    })
+    .catch(err => console.error(err))
 })
 
 module.exports = router

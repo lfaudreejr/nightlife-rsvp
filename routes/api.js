@@ -3,12 +3,14 @@ const router = express.Router()
 
 const Rsvp = require('./../models/rsvp.model')
 const rsvpController = require('../controllers/rsvp.controller')
+const yelpController = require('../controllers/yelp.controller')
 const checkJwt = require('../controllers/middleware')
 
 router.post('/rsvp/new', checkJwt, (req, res) => {
   console.log(req.body.yelpId)
   console.log(req.body.guestId)
-  rsvpController(req.body.yelpId, req.body.guestId)
+  rsvpController
+    .findRsvp(req.body.yelpId, req.body.guestId)
     .then(foundRsvp => {
       if (foundRsvp) {
         return res
