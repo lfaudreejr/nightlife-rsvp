@@ -5,6 +5,7 @@ import { AuthService } from './../auth/auth.service'
 import { RsvpModel } from './../core/models/rsvp.model'
 
 import { Router } from '@angular/router'
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 
 @Component({
   selector: 'app-yelp-results',
@@ -15,6 +16,7 @@ export class YelpResultsComponent implements OnInit {
   public searchResults
   private userRsvp: RsvpModel
   loading: boolean
+  user: string
 
   constructor(
     public yelp: YelpService,
@@ -25,28 +27,47 @@ export class YelpResultsComponent implements OnInit {
 
   ngOnInit() {
     this.loading = false
-    this.searchResults = JSON.parse(sessionStorage.getItem('results'))
+    const results = JSON.parse(sessionStorage.getItem('results'))
+    this.searchResults = results
+    this.setUser()
+  }
+
+  setUser() {
+    const curUser = localStorage.getItem('profile')
+    if (curUser) {
+      this.user = this.auth.userProfile.sub.substring(
+        this.auth.userProfile.sub.indexOf('|') + 1
+      )
+    }
   }
 
   goTop() {
     document.body.scrollTop = 0
   }
-  rsvp(bar: string) {
-    if (!this.auth.currentUser) {
+
+  async rsvp(bar: string) {
+    this.loading = true
+    if (!this.auth.userProfile) {
       this.auth.login()
     }
-    const user = this.auth.currentUser.sub.substring(
-      this.auth.currentUser.sub.indexOf('|') + 1
-    )
     this.userRsvp = {
       yelpId: bar,
-      guestId: user
+      guestId: this.user
     }
-    this.api.postRsvp$(this.userRsvp).subscribe(data => {
-      console.log(data)
-      err => {
-        console.error(err)
+    this.api.postRsvp$(this.userRsvp).subscribe(
+      data => {
+        console.log(data)
+        this.yelp
+          .searchYelp(sessionStorage.getItem('location'))
+          .subscribe(data => {
+            this.ngOnInit()
+            this.loading = false
+          })
+      },
+      error => {
+        console.error(error)
+        this.loading = false
       }
-    })
+    )
   }
 }

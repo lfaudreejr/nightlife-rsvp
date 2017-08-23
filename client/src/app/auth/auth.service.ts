@@ -19,7 +19,6 @@ export class AuthService {
     scope: 'openid profile'
   })
   userProfile: any
-  currentUser: any
   // Create a stream of logged in status to communicate throughout app
   loggedIn: boolean
   loggedIn$ = new BehaviorSubject<boolean>(this.loggedIn)
@@ -88,7 +87,6 @@ export class AuthService {
     localStorage.setItem('expires_at', expiresAt)
     localStorage.setItem('profile', JSON.stringify(profile))
     this.userProfile = profile
-    this.currentUser = authResult.idTokenPayload
     // Update login status in loggedIn$ stream
     this.setLoggedIn(true)
   }

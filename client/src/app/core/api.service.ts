@@ -26,9 +26,7 @@ export class ApiService {
   }
 
   private _handleSuccess(res: Response) {
-    sessionStorage.setItem('results', JSON.stringify(res))
-    this.router.navigate(['/results'])
-    // return res.json()
+    return res.json()
   }
 
   private _handleError(err: Response | any) {

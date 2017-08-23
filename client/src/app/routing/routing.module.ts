@@ -12,7 +12,7 @@ const routes: Routes = [
     component: HomeComponent
   },
   {
-    path: 'results',
+    path: 'results/:location',
     component: YelpResultsComponent
   },
   { path: 'callback', component: CallbackComponent },

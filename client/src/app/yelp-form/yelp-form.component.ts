@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core'
+import { Router } from '@angular/router'
 
 import { YelpService } from './../shared/yelp.service'
 
@@ -10,7 +11,7 @@ import { YelpService } from './../shared/yelp.service'
 export class YelpFormComponent implements OnInit {
   loading: boolean
 
-  constructor(private yelp: YelpService) {}
+  constructor(private yelp: YelpService, private router: Router) {}
 
   ngOnInit() {
     this.loading = false
@@ -18,6 +19,8 @@ export class YelpFormComponent implements OnInit {
 
   getYelp(location: string) {
     this.loading = true
-    this.yelp.searchYelp(location)
+    this.yelp.searchYelp(location).subscribe(data => {
+      this.router.navigate(['/results', location])
+    })
   }
 }

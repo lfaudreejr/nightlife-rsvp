@@ -11,7 +11,7 @@
         <a class="nav-link" (click)="auth.login()">Login/Signup</a>
       </li>
       <li class="nav-item" *ngIf="auth.loggedIn">
-        <a class="nav-link">Welcome {{auth.currentUser.name ? auth.currentUser.name : auth.currentUser.nickname}} |</a>
+        <a class="nav-link">Welcome {{auth.userProfile.name ? auth.userProfile.name : auth.userProfile.nickname}} |</a>
       </li>
       <li class="nav-item" *ngIf="auth.loggedIn">
         <a class="nav-link" (click)="auth.logout()">Logout</a>

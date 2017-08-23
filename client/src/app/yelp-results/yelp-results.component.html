@@ -1,8 +1,8 @@
-<app-loading *ngIf="loading">
-</app-loading>
-
 <div class="home-bgcolor">
   <div class="container" id="results">
+    <app-loading *ngIf="loading">
+    </app-loading>
+
     <div class="card-columns">
       <div class="card" *ngFor="let result of searchResults">
         <img class="card-img-top" src="{{result.image_url}}" alt="Card image cap">
@@ -13,8 +13,12 @@
           <p class="card-text">Rating: {{result.rating}} stars from {{result.review_count}} ratings</p>
           <p class="card-text">Location: {{result.location.display_address}}</p>
 
-          <p *ngIf="result.attending.length > 0">{{result.attending.length}} attending</p>
-          <p *ngIf="result.attending.length === 0">0 attending</p>
+          <p *ngIf="result.attending.length > 0" class="text-danger">{{result.attending.length}} attending
+            <span *ngFor="let attending of result.attending">
+              <em *ngIf="user === attending"> (You are attending.)</em>
+            </span>
+          </p>
+          <p *ngIf="result.attending.length === 0" class="text-danger">0 attending</p>
 
           <p class="card-text"><small class="text-muted"><a href="{{result.url}}" target="_blank">See on Yelp</a></small><a class="float-right text-info"
               *ngIf="!this.auth.loggedIn" (click)="auth.login()">Login to RSVP</a>

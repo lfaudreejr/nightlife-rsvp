@@ -10,7 +10,7 @@ router.post('/rsvp/new', checkJwt, (req, res) => {
   console.log(req.body.yelpId)
   console.log(req.body.guestId)
   rsvpController
-    .findRsvp(req.body.yelpId, req.body.guestId)
+    .findOneRsvp(req.body.yelpId)
     .then(foundRsvp => {
       if (foundRsvp) {
         return res
