@@ -16,6 +16,8 @@ export class YelpResultsComponent implements OnInit {
   public searchResults
   private userRsvp: RsvpModel
   loading: boolean
+  error: boolean
+  errorMsg: string
   user: string
 
   constructor(
@@ -27,6 +29,7 @@ export class YelpResultsComponent implements OnInit {
 
   ngOnInit() {
     this.loading = false
+    // this.error = false
     const results = JSON.parse(sessionStorage.getItem('results'))
     this.searchResults = results
     this.setUser()
@@ -38,6 +41,7 @@ export class YelpResultsComponent implements OnInit {
       this.user = this.getUser()
     }
   }
+
   getUser() {
     const curUser = localStorage.getItem('profile')
     if (curUser) {
@@ -62,17 +66,20 @@ export class YelpResultsComponent implements OnInit {
     }
     this.api.postRsvp$(this.userRsvp).subscribe(
       data => {
-        console.log(data)
-        this.yelp
-          .searchYelp(sessionStorage.getItem('location'))
-          .subscribe(data => {
+        this.yelp.searchYelp(sessionStorage.getItem('location')).subscribe(
+          data => {
             this.ngOnInit()
             this.loading = false
-          })
+          },
+          error => {
+            console.error(error)
+            this._handleError(error)
+          }
+        )
       },
       error => {
         console.error(error)
-        this.loading = false
+        this._handleError(error)
       }
     )
   }
@@ -87,12 +94,31 @@ export class YelpResultsComponent implements OnInit {
             this.ngOnInit()
             this.loading = false
           },
-          error => console.error(error)
+          error => {
+            console.error(error)
+            this._handleError(error)
+          }
         )
       },
       error => {
         console.error(error)
+        this._handleError(error)
       }
     )
+  }
+
+  _removeAlert() {
+    setTimeout(() => {
+      this.error = false
+    }, 3000)
+  }
+
+  _handleError(error) {
+    const newError = new Error(error)
+    this.error = true
+    this.loading = false
+    this.errorMsg = newError.message
+    this.goTop()
+    this._removeAlert()
   }
 }

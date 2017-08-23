@@ -10,7 +10,10 @@ router.get('/:location', (req, res) => {
       res.json(bars)
       // console.log('GOT DEM BARS TO DATE', bars)
     })
-    .catch(err => console.error(err))
+    .catch(err => {
+      console.error(err)
+      throw err
+    })
 })
 
 module.exports = router

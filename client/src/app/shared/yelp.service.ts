@@ -13,7 +13,6 @@ export class YelpService {
         headers: new HttpHeaders().set('content-type', 'application/json')
       })
       .map(res => {
-        console.log(res)
         sessionStorage.setItem('results', JSON.stringify(res))
         sessionStorage.setItem('location', location)
         // this.router.navigate(['/results', location])

@@ -7,8 +7,6 @@ const yelpController = require('../controllers/yelp.controller')
 const checkJwt = require('../controllers/middleware')
 
 router.post('/rsvp/new', checkJwt, (req, res) => {
-  console.log(req.body.yelpId)
-  console.log(req.body.guestId)
   rsvpController
     .findOneRsvp(req.body.yelpId)
     .then(foundRsvp => {
@@ -16,9 +14,7 @@ router.post('/rsvp/new', checkJwt, (req, res) => {
         const isRsvp = foundRsvp.guestId.filter(id => {
           return id.indexOf(req.body.guestId) !== -1
         })
-        console.log('rsvp:', isRsvp)
         if (isRsvp.length > 0) {
-          console.log('Already RSVP')
           return res.status(409).send({ message: 'User Rsvp already.' })
         } else {
           foundRsvp.guestId.push(req.body.guestId)
@@ -48,14 +44,11 @@ router.delete('/rsvp/delete', checkJwt, (req, res) => {
     .findOneRsvp(req.body.yelpId)
     .then(foundRsvp => {
       if (foundRsvp) {
-        console.log(foundRsvp)
         foundRsvp.guestId.map(id => {
           if (id === req.body.guestId) {
-            // console.log(id)
             foundRsvp.guestId.pop(id)
           }
         })
-        console.log(foundRsvp)
         foundRsvp.save(err => {
           if (err) throw err
           res.send(foundRsvp)

@@ -2,6 +2,12 @@
   <div class="container" id="results">
     <app-loading *ngIf="loading">
     </app-loading>
+    <!-- Error Loading Events -->
+    <div class="container">
+      <p *ngIf="error" class="alert alert-danger">
+        <strong>Oops!</strong> {{errorMsg}}
+      </p>
+    </div>
     <div class="card-columns">
       <div class="card mb-3" *ngFor="let result of searchResults">
         <img class="card-img-top" src="{{result.image_url}}" alt="Card image cap">
@@ -22,7 +28,7 @@
           </p>
           <p *ngIf="result.attending.length < 1" class="text-danger">0 attending</p>
           <a class="float-right text-info" *ngIf="!this.auth.loggedIn" (click)="auth.login()">Login to RSVP</a>
-          <a (click)="rsvp(result.id)" class="float-right text-info">RSVP</a>
+          <a (click)="rsvp(result.id)" *ngIf="this.auth.loggedIn" class="float-right text-info">RSVP</a>
           <p class="card-text"><small class="text-muted"><a href="{{result.url}}" target="_blank">See on Yelp</a></small>
           </p>
         </div>
