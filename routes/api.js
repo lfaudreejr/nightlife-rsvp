@@ -13,23 +13,57 @@ router.post('/rsvp/new', checkJwt, (req, res) => {
     .findOneRsvp(req.body.yelpId)
     .then(foundRsvp => {
       if (foundRsvp) {
-        return res
-          .status(409)
-          .send({ message: "You have already RSVP'd to this bar." })
-      }
-      const rsvp = new Rsvp({
-        yelpId: req.body.yelpId,
-        guestId: req.body.guestId
-      })
-      rsvp.save(err => {
-        if (err) {
-          throw err
+        const isRsvp = foundRsvp.guestId.filter(id => {
+          return id.indexOf(req.body.guestId) !== -1
+        })
+        console.log('rsvp:', isRsvp)
+        if (isRsvp.length > 0) {
+          console.log('Already RSVP')
+          return res.status(409).send({ message: 'User Rsvp already.' })
+        } else {
+          foundRsvp.guestId.push(req.body.guestId)
+          foundRsvp.save()
+          res.send(foundRsvp)
         }
-        res.send(rsvp)
-      })
+      } else {
+        const rsvp = new Rsvp({
+          yelpId: req.body.yelpId,
+          guestId: req.body.guestId
+        })
+        rsvp.save(err => {
+          if (err) {
+            throw err
+          }
+          res.send(rsvp)
+        })
+      }
     })
     .catch(err => {
       return res.status(500).send({ message: 'Server error.' })
+    })
+})
+
+router.delete('/rsvp/delete', checkJwt, (req, res) => {
+  rsvpController
+    .findOneRsvp(req.body.yelpId)
+    .then(foundRsvp => {
+      if (foundRsvp) {
+        console.log(foundRsvp)
+        foundRsvp.guestId.map(id => {
+          if (id === req.body.guestId) {
+            // console.log(id)
+            foundRsvp.guestId.pop(id)
+          }
+        })
+        console.log(foundRsvp)
+        foundRsvp.save(err => {
+          if (err) throw err
+          res.send(foundRsvp)
+        })
+      }
+    })
+    .catch(error => {
+      console.error(error)
     })
 })
 

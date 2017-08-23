@@ -35,7 +35,13 @@ export class YelpResultsComponent implements OnInit {
   setUser() {
     const curUser = localStorage.getItem('profile')
     if (curUser) {
-      this.user = this.auth.userProfile.sub.substring(
+      this.user = this.getUser()
+    }
+  }
+  getUser() {
+    const curUser = localStorage.getItem('profile')
+    if (curUser) {
+      return this.auth.userProfile.sub.substring(
         this.auth.userProfile.sub.indexOf('|') + 1
       )
     }
@@ -45,7 +51,7 @@ export class YelpResultsComponent implements OnInit {
     document.body.scrollTop = 0
   }
 
-  async rsvp(bar: string) {
+  rsvp(bar: string) {
     this.loading = true
     if (!this.auth.userProfile) {
       this.auth.login()
@@ -67,6 +73,25 @@ export class YelpResultsComponent implements OnInit {
       error => {
         console.error(error)
         this.loading = false
+      }
+    )
+  }
+
+  removeRsvp(bar: string) {
+    this.loading = true
+    this.userRsvp = { yelpId: bar, guestId: this.user }
+    this.api.deleteRsvp$(this.userRsvp).subscribe(
+      data => {
+        this.yelp.searchYelp(sessionStorage.getItem('location')).subscribe(
+          data => {
+            this.ngOnInit()
+            this.loading = false
+          },
+          error => console.error(error)
+        )
+      },
+      error => {
+        console.error(error)
       }
     )
   }

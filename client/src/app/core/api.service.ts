@@ -25,6 +25,13 @@ export class ApiService {
       .catch(this._handleError)
   }
 
+  deleteRsvp$(rsvp: RsvpModel): Observable<RsvpModel> {
+    return this.authHttp
+      .delete('http://localhost:3000/api/rsvp/delete', { body: rsvp })
+      .map(this._handleSuccess)
+      .catch(this._handleError)
+  }
+
   private _handleSuccess(res: Response) {
     return res.json()
   }

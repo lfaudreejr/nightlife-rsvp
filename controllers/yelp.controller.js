@@ -23,13 +23,16 @@ async function getAttendees(bars) {
   let newBarArray = []
   for (let bar of bars) {
     let newBarObj = bar
+    newBarObj.attending = []
     let barRsvp = await rsvpController.findOneRsvp(bar.id)
     if (barRsvp) {
-      newBarObj.attending = barRsvp.guestId
-      newBarArray.push(newBarObj)
+      for (let i = 0; i < barRsvp.guestId.length; i++) {
+        console.log(barRsvp.guestId[i])
+        newBarObj.attending.push(barRsvp.guestId[i])
+        newBarArray.push(newBarObj)
+      }
     } else {
-      newBarObj.attending = 0
-      newBarArray.push(bar)
+      newBarArray.push(newBarObj)
     }
   }
   return newBarArray

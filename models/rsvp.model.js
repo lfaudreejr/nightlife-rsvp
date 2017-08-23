@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const RsvpSchema = new Schema({
   yelpId: { type: String },
-  guestId: { type: Array },
+  guestId: { type: Array, default: [] },
   attending: { type: Number, default: 0 }
 })
 
