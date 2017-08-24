@@ -9,6 +9,8 @@
       </p>
     </div>
     <div class="card-columns">
+      <h1 class="card mb-3" *ngIf="!searchResults">No results, try again.</h1>
+      <!-- iterate through any results -->
       <div class="card mb-3" *ngFor="let result of searchResults">
         <img class="card-img-top" src="{{result.image_url}}" alt="Card image cap">
         <div class="card-body">
@@ -16,7 +18,7 @@
           <p class="card-subtitle mb-2 text-muted"><span *ngFor="let title of result.categories">- {{title.title}} </span></p>
           <p class="card-text">Rating: {{result.rating}} stars from {{result.review_count}} ratings</p>
           <p class="card-text">Location: {{result.location.display_address}}</p>
-
+          <!-- iterate through attending -->
           <p *ngIf="result.attending.length > 0" class="text-danger">{{result.attending.length}} attending
             <span *ngFor="let attending of result.attending">
               <em *ngIf="user === attending"> (You are attending.)
@@ -25,9 +27,9 @@
             </span>
             <!-- <img src="{{auth.userProfile.picture}}" class="img-thumbnail" /> -->
           </p>
-
+          <!-- If user is not going show RSVP -->
           <a (click)="rsvp(result.id)" *ngIf="user && !isGoing(result)" class="float-right text-info">RSVP</a>
-
+          <!-- If user is going show remove -->
           <p class="card-text"><small class="text-muted"><a href="{{result.url}}" target="_blank">See on Yelp</a></small></p>
 
         </div>

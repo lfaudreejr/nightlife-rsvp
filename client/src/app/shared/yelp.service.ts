@@ -18,5 +18,11 @@ export class YelpService {
         // this.router.navigate(['/results', location])
         return res
       })
+      .catch(this._handleError)
+  }
+
+  private _handleError(err: Response | any) {
+    const errorMsg = err.message || 'Error: Unable to complete request.'
+    return Observable.throw(errorMsg)
   }
 }

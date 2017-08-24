@@ -10,6 +10,8 @@ import { YelpService } from './../shared/yelp.service'
 })
 export class YelpFormComponent implements OnInit {
   loading: boolean
+  error: boolean
+  errorMsg: string
 
   constructor(private yelp: YelpService, private router: Router) {}
 
@@ -19,8 +21,26 @@ export class YelpFormComponent implements OnInit {
 
   getYelp(location: string) {
     this.loading = true
-    this.yelp.searchYelp(location).subscribe(data => {
-      this.router.navigate(['/results', location])
-    })
+    this.yelp.searchYelp(location).subscribe(
+      data => {
+        this.router.navigate(['/results', location])
+      },
+      error => {
+        this._handleError(error)
+      }
+    )
+  }
+
+  _removeAlert() {
+    setTimeout(() => {
+      this.error = false
+    }, 3000)
+  }
+
+  _handleError(error) {
+    this.error = true
+    this.loading = false
+    this.errorMsg = 'Search results not found.'
+    this._removeAlert()
   }
 }

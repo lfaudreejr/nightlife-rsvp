@@ -1,6 +1,13 @@
 <app-loading *ngIf="loading">
 </app-loading>
 
+<!-- Error Loading Events -->
+<div class="container">
+  <p *ngIf="error" class="alert alert-danger">
+    <strong>Oops!</strong> {{errorMsg}}
+  </p>
+</div>
+
 <form class="form-location center" (ngSubmit)="getYelp(location.value); yelpForm.reset()" #yelpForm>
   <div class="input-group ">
     <label for="location" class="sr-only"></label>
