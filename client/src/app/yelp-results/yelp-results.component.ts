@@ -48,7 +48,17 @@ export class YelpResultsComponent implements OnInit {
       return this.auth.userProfile.sub.substring(
         this.auth.userProfile.sub.indexOf('|') + 1
       )
+    } else {
+      return -1
     }
+  }
+
+  isGoing(bar) {
+    const user = this.getUser()
+    const attending = bar.attending.find(bar => {
+      return bar == user
+    })
+    return attending
   }
 
   goTop() {

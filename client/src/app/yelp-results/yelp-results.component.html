@@ -13,8 +13,7 @@
         <img class="card-img-top" src="{{result.image_url}}" alt="Card image cap">
         <div class="card-body">
           <h4 class="card-title">{{result.name}}</h4>
-          <p class="card-subtitle mb-2 text-muted"><span *ngFor="let title of result.categories">- {{title.title}} </span>
-          </p>
+          <p class="card-subtitle mb-2 text-muted"><span *ngFor="let title of result.categories">- {{title.title}} </span></p>
           <p class="card-text">Rating: {{result.rating}} stars from {{result.review_count}} ratings</p>
           <p class="card-text">Location: {{result.location.display_address}}</p>
 
@@ -26,11 +25,11 @@
             </span>
             <!-- <img src="{{auth.userProfile.picture}}" class="img-thumbnail" /> -->
           </p>
-          <p *ngIf="result.attending.length < 1" class="text-danger">0 attending</p>
-          <a class="float-right text-info" *ngIf="!this.auth.loggedIn" (click)="auth.login()">Login to RSVP</a>
-          <a (click)="rsvp(result.id)" *ngIf="this.auth.loggedIn" class="float-right text-info">RSVP</a>
-          <p class="card-text"><small class="text-muted"><a href="{{result.url}}" target="_blank">See on Yelp</a></small>
-          </p>
+
+          <a (click)="rsvp(result.id)" *ngIf="user && !isGoing(result)" class="float-right text-info">RSVP</a>
+
+          <p class="card-text"><small class="text-muted"><a href="{{result.url}}" target="_blank">See on Yelp</a></small></p>
+
         </div>
       </div>
     </div>
