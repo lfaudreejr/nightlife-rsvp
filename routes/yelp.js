@@ -12,7 +12,7 @@ router.get('/:location', (req, res) => {
     })
     .catch(err => {
       console.error(err)
-      throw err
+      res.status(500).send(err)
     })
 })
 
