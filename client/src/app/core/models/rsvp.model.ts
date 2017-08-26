@@ -1,3 +1,6 @@
 export class RsvpModel {
-  constructor(public yelpId: string, public guestId: string) {}
+  constructor(
+    public yelpId: string,
+    public guest: { id: string; date: number }
+  ) {}
 }

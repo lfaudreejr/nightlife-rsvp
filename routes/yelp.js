@@ -8,7 +8,6 @@ router.get('/:location', (req, res) => {
   yelpBars
     .then(bars => {
       res.json(bars)
-      // console.log('GOT DEM BARS TO DATE', bars)
     })
     .catch(err => {
       console.error(err)

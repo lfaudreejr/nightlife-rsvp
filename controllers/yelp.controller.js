@@ -2,6 +2,21 @@ const yelp = require('yelp-fusion')
 
 const rsvpController = require('./rsvp.controller')
 
+async function removeRsvp(rsvp) {
+  const guestCheck = await rsvp.guest.map(guest => {
+    // if (guest.date + 5000 < Date.now()) {
+    //   console.log('OUTDATED: ', guest)
+    //   // rsvp.update({}, { $pull: { guest: { id: guest.id } } })
+    //   // rsvp.remove(guest)
+    //   rsvp.guest.pull(guest)
+    //   rsvp.save()
+    // }
+    rsvp.guest.pull(guest)
+    rsvp.save()
+  })
+  return rsvp
+}
+
 async function getYelpToken() {
   const clientId = process.env.YELP_ID
   const clientSecret = process.env.YELP_SECRET
@@ -16,25 +31,40 @@ async function searchYelp(token, location) {
     location: location
   }
   const clientSearch = await client.search(searchRequest)
-  return clientSearch.jsonBody.businesses.slice(0, 20)
+  return clientSearch.jsonBody.businesses.slice(0, 10)
 }
 
 async function getAttendees(bars) {
-  let newBarArray = []
-  for (let bar of bars) {
-    let newBarObj = bar
+  const newBarArray = []
+
+  for (let i = 0; i < bars.length; i++) {
+    const newBarObj = bars[i]
     newBarObj.attending = []
-    let barRsvp = await rsvpController.findOneRsvp(bar.id)
+    // console.log(bars[i].id)
+    const barRsvp = await rsvpController.findOneRsvp(bars[i].id)
     if (barRsvp) {
-      for (let i = 0; i < barRsvp.guestId.length; i++) {
-        console.log(barRsvp.guestId[i])
-        newBarObj.attending.push(barRsvp.guestId[i])
-        newBarArray.push(newBarObj)
+      for (let j = 0; j < barRsvp.guest.length; j++) {
+        const date = new Date()
+        const today = date.getDay()
+        if (
+          // barRsvp.guest[j].date + 3600000 < Date.now() &&
+          barRsvp.guest[j].date !== today &&
+          barRsvp.guest[j].date
+        ) {
+          await removeRsvp(barRsvp)
+          newBarArray.push(newBarObj)
+        } else {
+          console.log(barRsvp.guest[j])
+          newBarObj.attending.push(barRsvp.guest[j])
+          newBarArray.push(newBarObj)
+        }
       }
     } else {
+      // console.log(newBarObj)
       newBarArray.push(newBarObj)
     }
   }
+
   return newBarArray
 }
 

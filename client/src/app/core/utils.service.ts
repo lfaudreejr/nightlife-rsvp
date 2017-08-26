@@ -4,11 +4,8 @@ import { Injectable } from '@angular/core'
 export class UtilsService {
   constructor() {}
 
-  getCurrentDay(date: any) {
+  getToday() {
+    const date = new Date()
     return date.getDay()
-  }
-
-  getNewDate(date: any) {
-    return date.Date()
   }
 }

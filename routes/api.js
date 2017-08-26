@@ -11,20 +11,20 @@ router.post('/rsvp/new', checkJwt, (req, res) => {
     .findOneRsvp(req.body.yelpId)
     .then(foundRsvp => {
       if (foundRsvp) {
-        const isRsvp = foundRsvp.guestId.filter(id => {
-          return id.indexOf(req.body.guestId) !== -1
+        const isRsvp = foundRsvp.guest.filter(guest => {
+          return guest.id.indexOf(req.body.guest.id) !== -1
         })
         if (isRsvp.length > 0) {
           return res.status(409).send({ message: 'User Rsvp already.' })
         } else {
-          foundRsvp.guestId.push(req.body.guestId)
+          foundRsvp.guest.push(req.body.guest)
           foundRsvp.save()
           res.send(foundRsvp)
         }
       } else {
         const rsvp = new Rsvp({
           yelpId: req.body.yelpId,
-          guestId: req.body.guestId
+          guest: { id: req.body.guest.id, date: req.body.guest.date }
         })
         rsvp.save(err => {
           if (err) {
@@ -44,9 +44,9 @@ router.delete('/rsvp/delete', checkJwt, (req, res) => {
     .findOneRsvp(req.body.yelpId)
     .then(foundRsvp => {
       if (foundRsvp) {
-        foundRsvp.guestId.map(id => {
-          if (id === req.body.guestId) {
-            foundRsvp.guestId.pop(id)
+        foundRsvp.guest.map(guest => {
+          if (guest.id === req.body.guest.id) {
+            foundRsvp.guest.pop(guest)
           }
         })
         foundRsvp.save(err => {

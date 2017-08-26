@@ -3,6 +3,7 @@ import { YelpService } from './../shared/yelp.service'
 import { ApiService } from './../core/api.service'
 import { AuthService } from './../auth/auth.service'
 import { RsvpModel } from './../core/models/rsvp.model'
+import { UtilsService } from '../core/utils.service'
 
 import { Router } from '@angular/router'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
@@ -24,6 +25,7 @@ export class YelpResultsComponent implements OnInit {
     public yelp: YelpService,
     private api: ApiService,
     public auth: AuthService,
+    public utils: UtilsService,
     private router: Router
   ) {}
 
@@ -55,9 +57,10 @@ export class YelpResultsComponent implements OnInit {
 
   isGoing(bar) {
     const user = this.getUser()
-    const attending = bar.attending.find(bar => {
-      return bar == user
+    const attending = bar.attending.find(user => {
+      return user
     })
+    // console.log(attending)
     return attending
   }
 
@@ -70,9 +73,10 @@ export class YelpResultsComponent implements OnInit {
     if (!this.auth.userProfile) {
       this.auth.login()
     }
+    const day = this.utils.getToday()
     this.userRsvp = {
       yelpId: bar,
-      guestId: this.user
+      guest: { id: this.user, date: day }
     }
     this.api.postRsvp$(this.userRsvp).subscribe(
       data => {
@@ -96,7 +100,7 @@ export class YelpResultsComponent implements OnInit {
 
   removeRsvp(bar: string) {
     this.loading = true
-    this.userRsvp = { yelpId: bar, guestId: this.user }
+    this.userRsvp = { yelpId: bar, guest: { id: this.user, date: Date.now() } }
     this.api.deleteRsvp$(this.userRsvp).subscribe(
       data => {
         this.yelp.searchYelp(sessionStorage.getItem('location')).subscribe(
