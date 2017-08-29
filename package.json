@@ -1,14 +1,19 @@
 {
   "name": "Nightlife_RSVP",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "Nightlife RSVP Coordination App",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "prod:start": "NODE_ENV=production npm run start"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["nightlife", "coordination", "bars"],
+  "author": "Larry Faudree Jr",
+  "engines": {
+    "node": "8.4.0",
+    "npm": "5.3.0"
+  },
   "license": "ISC",
   "dependencies": {
     "bluebird": "3.5.0",
@@ -26,6 +31,7 @@
     "jwks-rsa": "1.2.0",
     "mongoose": "4.11.6",
     "morgan": "1.8.2",
+    "nodemon": "^1.11.0",
     "passport": "0.4.0",
     "response-time": "2.3.2",
     "yelp-fusion": "1.0.3"

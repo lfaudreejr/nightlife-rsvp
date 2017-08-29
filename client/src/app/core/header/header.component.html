@@ -8,13 +8,13 @@
   <div class="collapse navbar-collapse" id="navbarToggled">
     <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
       <li class="nav-item" *ngIf="!auth.loggedIn">
-        <a class="nav-link" (click)="auth.login()">Login/Signup</a>
+        <a class="nav-link" (click)="auth.login()" data-toggle="collapse" data-target=".navbar-collapse.show">Login/Signup</a>
       </li>
       <li class="nav-item" *ngIf="auth.loggedIn">
-        <a class="nav-link">Welcome {{auth.userProfile.name ? auth.userProfile.name : auth.userProfile.nickname}} |</a>
+        <a class="nav-link">Welcome {{auth.userProfile.name ? auth.userProfile.name : auth.userProfile.nickname}} </a>
       </li>
       <li class="nav-item" *ngIf="auth.loggedIn">
-        <a class="nav-link" (click)="auth.logout()">Logout</a>
+        <a class="nav-link" (click)="auth.logout()" data-toggle="collapse" data-target=".navbar-collapse.show">Logout</a>
       </li>
     </ul>
   </div>

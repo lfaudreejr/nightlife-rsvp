@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core'
-import { YelpService } from './../shared/yelp.service'
-import { ApiService } from './../core/api.service'
-import { AuthService } from './../auth/auth.service'
-import { RsvpModel } from './../core/models/rsvp.model'
-import { UtilsService } from '../core/utils.service'
+import { Component, OnInit } from '@angular/core';
+import { YelpService } from './../shared/yelp.service';
+import { ApiService } from './../core/api.service';
+import { AuthService } from './../auth/auth.service';
+import { RsvpModel } from './../core/models/rsvp.model';
+import { UtilsService } from '../core/utils.service';
 
-import { Router } from '@angular/router'
-import { BehaviorSubject } from 'rxjs/BehaviorSubject'
+import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
   selector: 'app-yelp-results',
@@ -14,12 +14,12 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject'
   styleUrls: ['./yelp-results.component.css']
 })
 export class YelpResultsComponent implements OnInit {
-  public searchResults
-  private userRsvp: RsvpModel
-  loading: boolean
-  error: boolean
-  errorMsg: string
-  user: string
+  public searchResults;
+  private userRsvp: RsvpModel;
+  loading: boolean;
+  error: boolean;
+  errorMsg: string;
+  user: string;
 
   constructor(
     public yelp: YelpService,
@@ -30,109 +30,108 @@ export class YelpResultsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loading = false
+    this.loading = false;
     // this.error = false
-    const results = JSON.parse(sessionStorage.getItem('results'))
-    this.searchResults = results
-    this.setUser()
+    const results = JSON.parse(sessionStorage.getItem('results'));
+    this.searchResults = results;
+    this.setUser();
   }
 
   setUser() {
-    const curUser = localStorage.getItem('profile')
+    const curUser = localStorage.getItem('profile');
     if (curUser) {
-      this.user = this.getUser()
+      this.user = this.getUser();
     }
   }
 
   getUser() {
-    const curUser = localStorage.getItem('profile')
+    const curUser = localStorage.getItem('profile');
     if (curUser) {
       return this.auth.userProfile.sub.substring(
         this.auth.userProfile.sub.indexOf('|') + 1
-      )
+      );
     } else {
-      return -1
+      return -1;
     }
   }
 
   isGoing(bar) {
-    const user = this.getUser()
-    const attending = bar.attending.find(user => {
-      return user
-    })
-    // console.log(attending)
-    return attending
+    const user = this.getUser();
+    const attending = bar.attending.find(guest => {
+      return user == guest.id;
+    });
+    return attending;
   }
 
   goTop() {
-    document.body.scrollTop = 0
+    document.body.scrollTop = 0;
   }
 
   rsvp(bar: string) {
-    this.loading = true
+    this.loading = true;
     if (!this.auth.userProfile) {
-      this.auth.login()
+      this.auth.login();
     }
-    const day = this.utils.getToday()
+    const day = this.utils.getToday();
     this.userRsvp = {
       yelpId: bar,
       guest: { id: this.user, date: day }
-    }
+    };
     this.api.postRsvp$(this.userRsvp).subscribe(
       data => {
         this.yelp.searchYelp(sessionStorage.getItem('location')).subscribe(
           data => {
-            this.ngOnInit()
-            this.loading = false
+            this.ngOnInit();
+            this.loading = false;
           },
           error => {
-            console.error(error)
-            this._handleError(error)
+            console.error(error);
+            this._handleError(error);
           }
-        )
+        );
       },
       error => {
-        console.error(error)
-        this._handleError(error)
+        console.error(error);
+        this._handleError(error);
       }
-    )
+    );
   }
 
   removeRsvp(bar: string) {
-    this.loading = true
-    this.userRsvp = { yelpId: bar, guest: { id: this.user, date: Date.now() } }
+    this.loading = true;
+    this.userRsvp = { yelpId: bar, guest: { id: this.user, date: Date.now() } };
     this.api.deleteRsvp$(this.userRsvp).subscribe(
       data => {
         this.yelp.searchYelp(sessionStorage.getItem('location')).subscribe(
           data => {
-            this.ngOnInit()
-            this.loading = false
+            this.ngOnInit();
+            this.loading = false;
           },
           error => {
-            console.error(error)
-            this._handleError(error)
+            console.error(error);
+            this._handleError(error);
           }
-        )
+        );
       },
       error => {
-        console.error(error)
-        this._handleError(error)
+        console.error(error);
+        this._handleError(error);
       }
-    )
+    );
   }
 
   _removeAlert() {
     setTimeout(() => {
-      this.error = false
-    }, 3000)
+      this.error = false;
+    }, 3000);
   }
 
   _handleError(error) {
-    const newError = new Error(error)
-    this.error = true
-    this.loading = false
-    this.errorMsg = newError.message
-    this.goTop()
-    this._removeAlert()
+    const newError = new Error(error);
+    this.error = true;
+    this.loading = false;
+    this.errorMsg = newError.message;
+    this.goTop();
+    this._removeAlert();
   }
 }
