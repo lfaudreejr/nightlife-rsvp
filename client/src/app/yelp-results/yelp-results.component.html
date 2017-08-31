@@ -19,7 +19,7 @@
           <p class="card-text">Rating: {{result.rating}} stars from {{result.review_count}} ratings</p>
           <p class="card-text">Location: {{result.location.display_address}}</p>
           <!-- iterate through attending -->
-          <p *ngIf="result.attending.length > 0" class="text-danger">{{result.attending.length}} attending
+          <p *ngIf="result.attending.length !== 0" class="text-danger">{{result.attending.length}} attending
             <span *ngFor="let attending of result.attending">
               <em *ngIf="user === attending.id"> (You are attending.)
                 <a class="float-right text-info" (click)="removeRsvp(result.id)">Remove</a>

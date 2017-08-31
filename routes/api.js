@@ -46,6 +46,7 @@ router.delete('/rsvp/delete', checkJwt, (req, res) => {
       if (foundRsvp) {
         foundRsvp.guest.map(guest => {
           if (guest.id === req.body.guest.id) {
+            console.log(foundRsvp)
             foundRsvp.guest.pop(guest)
           }
         })

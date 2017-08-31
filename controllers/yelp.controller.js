@@ -40,27 +40,32 @@ async function getAttendees(bars) {
   for (let i = 0; i < bars.length; i++) {
     const newBarObj = bars[i]
     newBarObj.attending = []
-    // console.log(bars[i].id)
-    const barRsvp = await rsvpController.findOneRsvp(bars[i].id)
+    const barRsvp = await rsvpController.findOneRsvp(newBarObj.id)
     if (barRsvp) {
-      for (let j = 0; j < barRsvp.guest.length; j++) {
-        const date = new Date()
-        const today = date.getDay()
-        if (
-          // barRsvp.guest[j].date + 3600000 < Date.now() &&
-          barRsvp.guest[j].date !== today &&
-          barRsvp.guest[j].date
-        ) {
-          await removeRsvp(barRsvp)
-          newBarArray.push(newBarObj)
-        } else {
-          console.log(barRsvp.guest[j])
-          newBarObj.attending.push(barRsvp.guest[j])
-          newBarArray.push(newBarObj)
+      if (barRsvp.guest.length > 0) {
+        for (let j = 0; j < barRsvp.guest.length; j++) {
+          const date = new Date()
+          const today = date.getDay()
+          if (
+            // barRsvp.guest[j].date + 3600000 < Date.now() &&
+            barRsvp.guest[j].date !== today &&
+            barRsvp.guest[j].date
+          ) {
+            await removeRsvp(barRsvp)
+            // console.log("removed", barRsvp.guest[j])
+            newBarArray.push(newBarObj)
+          } else {
+            // console.log("sending", barRsvp.guest[j])
+            newBarObj.attending.push(barRsvp.guest[j])
+            newBarArray.push(newBarObj)
+          }
         }
+      } else {
+        // console.log("nothing", newBarObj)
+        newBarArray.push(newBarObj)
       }
     } else {
-      // console.log(newBarObj)
+      // console.log("nothing", newBarObj)
       newBarArray.push(newBarObj)
     }
   }

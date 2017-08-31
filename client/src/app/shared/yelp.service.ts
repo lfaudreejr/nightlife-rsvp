@@ -16,7 +16,8 @@ export class YelpService {
         sessionStorage.setItem('results', JSON.stringify(res))
         sessionStorage.setItem('location', location)
         // this.router.navigate(['/results', location])
-        return res
+        // console.log(res)
+        return JSON.stringify(res)
       })
       .catch(this._handleError)
   }
