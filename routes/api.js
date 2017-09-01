@@ -44,10 +44,9 @@ router.delete('/rsvp/delete', checkJwt, (req, res) => {
     .findOneRsvp(req.body.yelpId)
     .then(foundRsvp => {
       if (foundRsvp) {
-        foundRsvp.guest.map(guest => {
-          if (guest.id === req.body.guest.id) {
-            console.log(foundRsvp)
-            foundRsvp.guest.pop(guest)
+        foundRsvp.guest.map(foundGuest => {
+          if (foundGuest.id === req.body.guest.id) {
+            foundRsvp.guest.remove(foundGuest)
           }
         })
         foundRsvp.save(err => {

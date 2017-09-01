@@ -2,7 +2,6 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-// const csrf = require("csurf");
 const cookieSession = require('cookie-session');
 const RateLimit = require('express-rate-limit');
 const responseTime = require('response-time');
@@ -10,10 +9,11 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const path = require('path');
 const server = express();
-require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const config = require('./config');
 
 const yelpRoutes = require('./routes/yelp');
@@ -28,6 +28,7 @@ MongoDB.on('error', () => {
     config.MONGO_URI,
     'is running.'
   );
+  process.exit()
 });
 MongoDB.on('open', () => {
   console.info('Connected to Mongodb:', config.MONGO_URI);
@@ -39,7 +40,10 @@ const limiter = new RateLimit({
   delayMs: 0
 });
 server.use(morgan('combined'));
-server.use(cors());
+if (process.env.NODE_ENV !== 'production') {
+  const cors = require('cors');
+  server.use(cors())
+}
 // parse application/x-www-form-urlencoded
 server.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
@@ -54,7 +58,6 @@ server.use(
   })
 );
 server.use(cookieParser());
-// server.use(csrf({ cookie: true }));
 server.use(compression());
 server.use(responseTime());
 server.use(passport.initialize());
@@ -80,6 +83,7 @@ server.use(function(req, res, next) {
 });
 // Set Port
 const port = process.env.PORT || 3000;
+server.set("port", port);
 server.listen(port, err => {
   if (err) throw err;
   console.log(

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const RsvpSchema = new Schema({
-  yelpId: { type: String },
+  yelpId: { type: String, index: true },
   guest: { type: Array, default: [] }
   // attending: { type: Number, default: 0 }
 })

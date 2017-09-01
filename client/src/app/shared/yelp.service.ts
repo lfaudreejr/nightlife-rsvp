@@ -10,7 +10,7 @@ export class YelpService {
 
   public searchYelp(location: string): Observable<any> {
     return this.http
-      .get(`${ENV.BASE_API}/yelp/${location}`, {
+      .get(`${ENV.YELP_URI}/${location}`, {
         headers: new HttpHeaders().set('content-type', 'application/json')
       })
       .map(res => {

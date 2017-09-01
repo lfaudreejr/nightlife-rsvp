@@ -20,14 +20,14 @@ export class ApiService {
 
   postRsvp$(rsvp: RsvpModel): Observable<RsvpModel> {
     return this.authHttp
-      .post(`${ENV.BASE_API}/api/rsvp/new`, rsvp)
+      .post(`${ENV.BASE_API}/rsvp/new`, rsvp)
       .map(this._handleSuccess)
       .catch(this._handleError)
   }
 
   deleteRsvp$(rsvp: RsvpModel): Observable<RsvpModel> {
     return this.authHttp
-      .delete(`${ENV.BASE_API}/api/rsvp/delete`, { body: rsvp })
+      .delete(`${ENV.BASE_API}/rsvp/delete`, { body: rsvp })
       .map(this._handleSuccess)
       .catch(this._handleError)
   }
