@@ -33,7 +33,6 @@ export class YelpResultsComponent implements OnInit {
     this.loading = false;
     // this.error = false
     const results = JSON.parse(sessionStorage.getItem('results'))
-    console.log(results)
     this.searchResults = results;
 
     this.setUser();
