@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Rx'
 import 'rxjs/add/operator/map'
 import 'rxjs/add/operator/catch'
 import { RsvpModel } from './models/rsvp.model'
-
+import { ENV } from "../core/env.config"
 import { Router } from '@angular/router'
 
 @Injectable()
@@ -20,14 +20,14 @@ export class ApiService {
 
   postRsvp$(rsvp: RsvpModel): Observable<RsvpModel> {
     return this.authHttp
-      .post('http://localhost:3000/api/rsvp/new', rsvp)
+      .post(`${ENV.BASE_API}/api/rsvp/new`, rsvp)
       .map(this._handleSuccess)
       .catch(this._handleError)
   }
 
   deleteRsvp$(rsvp: RsvpModel): Observable<RsvpModel> {
     return this.authHttp
-      .delete('http://localhost:3000/api/rsvp/delete', { body: rsvp })
+      .delete(`${ENV.BASE_API}/api/rsvp/delete`, { body: rsvp })
       .map(this._handleSuccess)
       .catch(this._handleError)
   }

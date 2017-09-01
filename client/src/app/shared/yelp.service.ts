@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Router } from '@angular/router'
 import { Observable } from 'rxjs/Rx'
+import { ENV } from "../core/env.config"
 
 @Injectable()
 export class YelpService {
@@ -9,7 +10,7 @@ export class YelpService {
 
   public searchYelp(location: string): Observable<any> {
     return this.http
-      .get(`http://localhost:3000/yelp/${location}`, {
+      .get(`${ENV.BASE_API}/yelp/${location}`, {
         headers: new HttpHeaders().set('content-type', 'application/json')
       })
       .map(res => {

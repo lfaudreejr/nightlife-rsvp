@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Router } from '@angular/router'
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
-import { AUTH_CONFIG } from './auth0-config'
+import { AUTH_CONFIG } from './auth-config'
 import * as auth0 from 'auth0-js'
 
 // Avoid name not found warnings
@@ -11,11 +11,11 @@ declare var auth0: any
 export class AuthService {
   // Create Auth0 web auth instance
   private _auth0 = new auth0.WebAuth({
-    clientID: AUTH_CONFIG.clientID,
-    domain: AUTH_CONFIG.domain,
+    clientID: AUTH_CONFIG.CLIENT_ID,
+    domain: AUTH_CONFIG.CLIENT_DOMAIN,
     responseType: 'token id_token',
-    redirectUri: AUTH_CONFIG.callbackURL,
-    audience: AUTH_CONFIG.audience,
+    redirectUri: AUTH_CONFIG.REDIRECT,
+    audience: AUTH_CONFIG.AUDIENCE,
     scope: 'openid profile'
   })
   userProfile: any

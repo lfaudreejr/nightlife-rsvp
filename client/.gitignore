@@ -43,3 +43,4 @@ Thumbs.db
 
 # config
 auth0-config.ts
+env.config.ts
