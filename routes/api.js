@@ -53,7 +53,7 @@ router.delete('/rsvp/delete', checkJwt, (req, res) => {
           if (err) throw err
           res.send(foundRsvp)
         })
-      }
+      } 
     })
     .catch(error => {
       console.error(error)
