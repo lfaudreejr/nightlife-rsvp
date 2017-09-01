@@ -11,9 +11,10 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const path = require('path');
 const server = express();
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   require('dotenv').config()
+// }
+require('dotenv').config()
 const config = require('./config');
 
 const yelpRoutes = require('./routes/yelp');
