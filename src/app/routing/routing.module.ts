@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './../home/home.component';
-import { YelpResultsComponent } from './../yelp-results/yelp-results.component';
 import { CallbackComponent } from './../callback/callback.component';
 
 const routes: Routes = [
@@ -13,7 +12,7 @@ const routes: Routes = [
   },
   {
     path: 'results/:location',
-    component: YelpResultsComponent
+    loadChildren: '../yelp-results/yelp-results.module#YelpResultsModule'
   },
   { path: 'callback', component: CallbackComponent },
   { path: '**', pathMatch: 'full', redirectTo: '' }
