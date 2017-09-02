@@ -6,6 +6,6 @@ export class UtilsService {
 
   getToday() {
     const date = new Date();
-    return date.getDay();
+    return date.getUTCDay();
   }
 }

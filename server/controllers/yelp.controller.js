@@ -45,7 +45,7 @@ async function getAttendees(bars) {
       if (barRsvp.guest.length > 0) {
         for (let j = 0; j < barRsvp.guest.length; j++) {
           const date = new Date()
-          const today = date.getDay()
+          const today = date.getUTCDay()
           if (
             // barRsvp.guest[j].date + 3600000 < Date.now() &&
             barRsvp.guest[j].date !== today &&
