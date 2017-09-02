@@ -1,7 +1,7 @@
 const jwt = require('express-jwt')
 const jwks = require('jwks-rsa')
 
-const config = require('../config')
+const config = require('./../config')
 
 // Authentication middleware. When used, the
 // access token must exist and be verified against
