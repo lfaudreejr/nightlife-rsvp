@@ -11,7 +11,7 @@ async function removeRsvp(rsvp) {
     //   rsvp.guest.pull(guest)
     //   rsvp.save()
     // }
-    rsvp.guest.pull(guest)
+    rsvp.guest.remove(guest)
     rsvp.save()
   })
   return rsvp
