@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "prod:start": "NODE_ENV=production npm run start",
-    "preinstall": "npm install -g @angular/cli @angular/compiler-cli typescript",
+    "preinstall": "cd client && npm install -g @angular/cli @angular/compiler-cli typescript",
     "postinstall": "cd client && ng build -prod"
   },
   "keywords": [
