@@ -8,7 +8,6 @@
     "start": "node server.js",
     "dev:start": "node server.js && ng serve",
     "prod:start": "NODE_ENV=production ng build -prod && npm run start",
-    "preinstall": "npm install @angular/cli @angular/compiler-cli -g",
     "postinstall": "ng build -prod",
     "build": "ng build",
     "test": "ng test",
