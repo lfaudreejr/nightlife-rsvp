@@ -61,8 +61,8 @@ server.use(
 server.use(cookieParser());
 server.use(compression());
 server.use(responseTime());
-server.use(passport.initialize());
-server.use(passport.session());
+// server.use(passport.initialize());
+// server.use(passport.session());
 // Set static path to Angular app in dist
 // Dont run in dev
 if (process.env.NODE_ENV !== 'dev') {
