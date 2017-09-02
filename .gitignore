@@ -4,7 +4,7 @@
 ### Angular ###
 ## Angular ##
 # compiled output
-# /dist
+/dist
 /tmp
 /app/**/*.js
 /app/**/*.js.map
@@ -91,6 +91,6 @@ typings/
 
 # dotenv environment variables file
 .env
-
+env.config.ts
 
 # End of https://www.gitignore.io/api/node,angular
