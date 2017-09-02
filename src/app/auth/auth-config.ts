@@ -14,4 +14,4 @@ export const AUTH_CONFIG: AuthConfig = {
   AUDIENCE: 'http://localhost:3000/api',
   REDIRECT: `${ENV.BASE_URI}/callback`,
   SCOPE: 'openid profile'
-}
+};

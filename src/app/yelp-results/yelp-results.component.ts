@@ -32,7 +32,7 @@ export class YelpResultsComponent implements OnInit {
   ngOnInit() {
     this.loading = false;
     // this.error = false
-    const results = JSON.parse(sessionStorage.getItem('results'))
+    const results = JSON.parse(sessionStorage.getItem('results'));
     this.searchResults = results;
 
     this.setUser();
@@ -59,7 +59,7 @@ export class YelpResultsComponent implements OnInit {
   isGoing(bar) {
     const user = this.getUser();
     const attending = bar.attending.find(guest => {
-      return user == guest.id;
+      return user === guest.id;
     });
     return attending;
   }
@@ -79,9 +79,9 @@ export class YelpResultsComponent implements OnInit {
       guest: { id: this.user, date: day }
     };
     this.api.postRsvp$(this.userRsvp).subscribe(
-      data => {
+      postData => {
         this.yelp.searchYelp(sessionStorage.getItem('location')).subscribe(
-          data => {
+          yelpData => {
             this.ngOnInit();
             this.loading = false;
           },
@@ -102,9 +102,9 @@ export class YelpResultsComponent implements OnInit {
     this.loading = true;
     this.userRsvp = { yelpId: bar, guest: { id: this.user, date: Date.now() } };
     this.api.deleteRsvp$(this.userRsvp).subscribe(
-      data => {
+      deleteData => {
         this.yelp.searchYelp(sessionStorage.getItem('location')).subscribe(
-          data => {
+          yelpData => {
             this.ngOnInit();
             this.loading = false;
           },
