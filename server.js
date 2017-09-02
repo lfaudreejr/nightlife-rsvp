@@ -15,10 +15,10 @@ const server = express();
 //   require('dotenv').config()
 // }
 require('dotenv').config()
-const config = require('./config');
+const config = require('./server/config');
 
-const yelpRoutes = require('./routes/yelp');
-const apiRoutes = require('./routes/api');
+const yelpRoutes = require('./server/routes/yelp');
+const apiRoutes = require('./server/routes/api');
 
 // MongoDB - Mongoose
 mongoose.connect(config.MONGO_URI);
@@ -66,7 +66,7 @@ server.use(passport.session());
 // Set static path to Angular app in dist
 // Dont run in dev
 if (process.env.NODE_ENV !== 'dev') {
-  server.use('/', express.static(path.join(__dirname, './client/dist')));
+  server.use('/', express.static(path.join(__dirname, './dist')));
 }
 // Routes
 server.use('/yelp', yelpRoutes);
@@ -75,7 +75,7 @@ server.use('/api', apiRoutes);
 // Dont run in dev
 if (process.env.NODE_ENV !== 'dev') {
   server.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, '/client/dist/index.html'));
+    res.sendFile(path.join(__dirname, '/dist/index.html'));
   });
 }
 // 404 Handler
