@@ -4,11 +4,12 @@ Checkout local nightlife and RSVP to let people know where you're going!
 
 ---
 
-![RSVP Homepage Preview](https://raw.githubusercontent.com/lfaudreejr/nightlife-rsvp/master/images/rsvp-home.png)
+![RSVP Homepage Preview](https://github.com/lfaudreejr/nightlife-rsvp/raw/master/images/rsvp-home.png)
 
 ---
 
-![RSVP Preview](https://raw.githubusercontent.com/lfaudreejr/nightlife-rsvp/master/images/rsvp-search.png)
+![RSVP Preview](https://github.com/lfaudreejr/nightlife-rsvp/raw/master/images/rsvp-search.png)
+
 
 ---
 
